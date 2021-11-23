@@ -1,0 +1,114 @@
+﻿@using KarTech.Data.Models
+@using KarTech.Web.ViewModels.Computers
+ @model CreateComputerViewModel
+
+ @{
+    this.ViewData["Title"] = "Add a Computer";
+    var cpuItems = this.Model.CpuItems.Select(x => new SelectListItem(x.Value, x.Key));
+    var gpuItems = this.Model.GpuItems.Select(x => new SelectListItem(x.Value, x.Key));
+    var ramItems = this.Model.RamItems.Select(x => new SelectListItem(x.Value, x.Key)).OrderByDescending(x => x.Value);
+}
+
+<h1 class="text-center">@this.ViewData["Title"]</h1>
+<br />
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group col-6 offset-3">
+        <label asp-for="Title">Title:</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+     <div class="form-group col-6 offset-3">
+        <label asp-for="Description">Description:</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+     <div class="form-group col-6 offset-3">
+        <label asp-for="Price">Price:</label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <div class="form-group col-6 offset-3">
+        <label asp-for="Brand">Brand:</label>
+        <select asp-for="Brand" asp-items="Html.GetEnumSelectList<Brand>()" class="form-control">
+            <option>Please select...</option>
+        </select>
+        <span asp-validation-for="Brand" class="text-danger"></span>
+    </div>
+    <div class="form-group col-6 offset-3">
+        <label asp-for="Type">Type:</label>
+        <select asp-for="Type" class="form-control">
+            <option>Please select...</option>
+            <option value="false">Computer</option>
+            <option value="true">Laptop</option>
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+   
+    <div class="form-group col-6 offset-3">
+        <label asp-for="CpuId">Processor:</label>
+        <select id="cpuSearch" asp-for="CpuId" class="form-control" asp-items="cpuItems">
+            <option value="">Please select...</option>
+        </select>
+        <span asp-validation-for="CpuId" class="text-danger"></span>
+
+    </div>
+    <div class="form-group col-6 offset-3">
+        <label asp-for="GpuId">Graphics Card:</label>
+        <select id="gpuSearch" asp-for="GpuId" class="form-control" asp-items="gpuItems">
+            <option value="">Please select...</option>
+        </select>
+        <span asp-validation-for="GpuId" class="text-danger"></span>
+
+    </div>
+    <div class="form-group col-6 offset-3">
+        <label asp-for="RamId">Ram:</label>
+        <select asp-for="RamId" asp-items="ramItems" class="form-control">
+            <option selected="selected" value="">Please select</option>
+        </select>
+        <span asp-validation-for="RamId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group col-6 offset-3" id="StorageContainer">
+        <label asp-for="Storages">Storages:</label>
+        <span asp-validation-for="Storages" class="text-danger"></span>
+    </div>
+    <hr/ class="col-6"> 
+    <a class="btn btn-success form-control offset-5 col-2    text-center" onclick="AddStorage()">+</a>
+    <hr />
+    <input type="submit" class="btn btn-primary form-control offset-4 col-4" />
+
+
+</form>
+
+
+@section Scripts{
+<script type="text/javascript">
+     $(document).ready(function() {
+        $("#cpuSearch").select2();
+    });</script>
+
+<script type="text/javascript">
+     $(document).ready(function() {
+        $("#gpuSearch").select2();
+    });</script>
+
+<script type="text/javascript">
+        let storageIndex = 0;
+    function AddStorage() {
+        $("#StorageContainer")
+        .append(" <div class='form-group align-self-sm-auto'> <hr/>  Storage: <select  name='Storages["+storageIndex+"].IsSSD' > <option selected='selected' value='false'>HDD</option> <option  value='true'>SSD</option> </select> &emsp; &emsp; Capacity <input type='number' class='col-3 align-self-sm-auto' name='Storages["+storageIndex+"].Capacity' value='10' min='10' /> GB. &emsp; &emsp;  <a class='btn btn-danger align-self-sm-auto' onclick='Delete(this);'>Delete</a> </div>  ")
+       
+        storageIndex++;
+    }</script>
+
+<script>
+    function Delete(currentEl){
+    if(storageIndex > 0){
+    currentEl.parentNode.parentNode.removeChild(currentEl.parentNode);
+    }
+    }
+</script>
+
+
+}
